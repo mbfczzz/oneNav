@@ -40,7 +40,7 @@ ask() {
 }
 
 # ---------- sudo / 包管理器 ----------
-SUDO=""; [ "$(id -u)" = "0" ] || SUDO="sudo"
+if [ "$(id -u)" = "0" ]; then SUDO=""; SUDO_E=""; else SUDO="sudo"; SUDO_E="sudo -E"; fi
 PKG=""
 for m in apt-get dnf yum; do command -v "$m" >/dev/null 2>&1 && { PKG="$m"; break; }; done
 arch() { case "$(uname -m)" in x86_64|amd64) echo amd64;; aarch64|arm64) echo arm64;; *) echo amd64;; esac; }
@@ -65,9 +65,9 @@ install_node() {
   fi
   echo "==> 安装 Node.js 20"
   case "$PKG" in
-    apt-get) curl -fsSL https://deb.nodesource.com/setup_20.x | $SUDO -E bash - && $SUDO apt-get install -y nodejs ;;
-    dnf) curl -fsSL https://rpm.nodesource.com/setup_20.x | $SUDO -E bash - && $SUDO dnf install -y nodejs ;;
-    yum) curl -fsSL https://rpm.nodesource.com/setup_20.x | $SUDO -E bash - && $SUDO yum install -y nodejs ;;
+    apt-get) curl -fsSL https://deb.nodesource.com/setup_20.x | $SUDO_E bash - && $SUDO apt-get install -y nodejs ;;
+    dnf) curl -fsSL https://rpm.nodesource.com/setup_20.x | $SUDO_E bash - && $SUDO dnf install -y nodejs ;;
+    yum) curl -fsSL https://rpm.nodesource.com/setup_20.x | $SUDO_E bash - && $SUDO yum install -y nodejs ;;
     *) echo "✗ 请手动安装 Node 18+"; exit 1 ;;
   esac
 }
