@@ -67,7 +67,7 @@ async function save() {
       </label>
       <div class="rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
         预览:浏览器标题与顶栏将显示
-        <span class="font-semibold text-gray-800">{{ siteName || '自由墨客' }}</span>
+        <span class="font-semibold text-gray-800">{{ siteName || '启点导航' }}</span>
       </div>
       <p v-if="error" class="flex items-center gap-1 text-xs text-rose-500">
         <Icon icon="ri:error-warning-line" width="14" height="14" />

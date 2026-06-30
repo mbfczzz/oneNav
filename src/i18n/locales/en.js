@@ -1,5 +1,5 @@
 export default {
-  app: { name: 'ZMark', loading: 'Loading...' },
+  app: { name: '启点导航', loading: 'Loading...' },
   topbar: {
     search: 'Search keywords',
     refresh: 'Refresh data',

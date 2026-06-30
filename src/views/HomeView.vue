@@ -106,7 +106,7 @@ const currentCount = computed(() => store.visibleLinks.length)
 
         <footer class="mt-10 border-t border-gray-100 pt-5 text-center text-xs text-gray-500">
           <p>{{ store.settings.siteName || t('app.name') }} · 网址导航</p>
-          <p class="mt-1">© 2026 {{ store.settings.siteName || 'ZMark' }} · Powered by Vue 3 + Vite</p>
+          <p class="mt-1">© 2026 {{ store.settings.siteName || '启点导航' }} · Powered by Vue 3 + Vite</p>
         </footer>
       </main>
     </div>

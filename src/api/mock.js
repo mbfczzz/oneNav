@@ -165,7 +165,7 @@ export async function me() {
 export async function getSettings() {
   await delay(30)
   const db = load()
-  return { siteName: (db.settings && db.settings.siteName) || '自由墨客' }
+  return { siteName: (db.settings && db.settings.siteName) || '启点导航' }
 }
 export async function updateSettings(data) {
   await delay(50)

@@ -58,11 +58,11 @@ async function runImport() {
   try {
     parsed = JSON.parse(text.value)
   } catch {
-    error.value = '仅支持 ZMark/OneNav 导出的 JSON 文件'
+    error.value = '请上传有效的 JSON 文件'
     return
   }
   if (parsed == null || typeof parsed !== 'object') {
-    error.value = '仅支持 ZMark/OneNav 导出的 JSON 文件'
+    error.value = '请上传有效的 JSON 文件'
     return
   }
   importing.value = true
@@ -110,7 +110,7 @@ async function runImport() {
       </label>
 
       <div class="flex items-center justify-between">
-        <p class="text-[11px] text-gray-400">支持 ZMark / OneNav JSON;单次最多 2000 条,同名分类合并、重复链接自动跳过。</p>
+        <p class="text-[11px] text-gray-400">支持导航书签 JSON;单次最多 2000 条,同名分类合并、重复链接自动跳过。</p>
         <button class="shrink-0 text-[11px] text-primary hover:underline" @click="text = SAMPLE">填入示例</button>
       </div>
 

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "自由墨客 / ZMark — a faithful Vue 3 + Vite reproduction of the nav.rss.ink bookmark/navigation manager",
+  "description": "启点导航 — a Vue 3 + Vite + Go/MySQL multi-user bookmark/navigation portal",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

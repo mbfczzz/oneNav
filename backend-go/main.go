@@ -203,7 +203,7 @@ func main() {
 		WriteTimeout:      30 * time.Second,
 		IdleTimeout:       60 * time.Second,
 	}
-	log.Printf("ZMark Go API listening on http://localhost:%s (db=%s, prefix=%s)", appPort, name, prefix)
+	log.Printf("启点导航 API listening on http://localhost:%s (db=%s, prefix=%s)", appPort, name, prefix)
 	log.Printf("  admin user: %s (override with ADMIN_USER / ADMIN_PASS)", s.adminUser)
 	if s.adminPass == "admin123" {
 		log.Printf("  WARNING: using the default admin password 'admin123' — set ADMIN_PASS before exposing this server")
@@ -764,7 +764,7 @@ func (s *Server) handleMe(w http.ResponseWriter, r *http.Request) {
 
 // ---------- site settings ----------
 
-const defaultSiteName = "自由墨客"
+const defaultSiteName = "启点导航"
 
 func (s *Server) getSetting(key, def string) string {
 	var v sql.NullString

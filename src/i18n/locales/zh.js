@@ -1,6 +1,6 @@
 // Strings reproduced from the original ZMark/自由墨客 bundle where observed.
 export default {
-  app: { name: '自由墨客', loading: '加载中...' },
+  app: { name: '启点导航', loading: '加载中...' },
   topbar: {
     search: '关键词搜索',
     refresh: '刷新数据',

@@ -172,7 +172,7 @@ echo "==> [4/5] 启动服务"
 if [ "$(id -u)" = "0" ] && command -v systemctl >/dev/null 2>&1; then
   cat > "/etc/systemd/system/${APP_NAME}.service" <<EOF
 [Unit]
-Description=ZMark navigation server
+Description=QiDian (启点导航) navigation server
 After=network.target mysql.service mysqld.service mariadb.service
 
 [Service]
