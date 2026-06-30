@@ -27,6 +27,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -110,6 +111,7 @@ type Server struct {
 	adminUser string
 	adminPass string
 	authTTL   time.Duration
+	webDir    string // when set, serve the built SPA from here (single-port deploy)
 
 	mu     sync.Mutex
 	tokens map[string]session
@@ -174,6 +176,7 @@ func main() {
 		adminUser: env("ADMIN_USER", "admin"),
 		adminPass: env("ADMIN_PASS", "admin123"),
 		authTTL:   time.Duration(ttlHours) * time.Hour,
+		webDir:    env("WEB_DIR", ""),
 		tokens:    map[string]session{},
 	}
 
@@ -202,6 +205,9 @@ func main() {
 	log.Printf("  admin user: %s (override with ADMIN_USER / ADMIN_PASS)", s.adminUser)
 	if s.adminPass == "admin123" {
 		log.Printf("  WARNING: using the default admin password 'admin123' — set ADMIN_PASS before exposing this server")
+	}
+	if s.webDir != "" {
+		log.Printf("  serving SPA from %s", s.webDir)
 	}
 	if err := srv.ListenAndServe(); err != nil {
 		log.Fatal(err)
@@ -606,7 +612,24 @@ func (s *Server) routes() *http.ServeMux {
 	mux.HandleFunc("POST /api/import", s.auth(s.handleImport))
 	mux.HandleFunc("POST /api/reset", s.auth(s.handleReset))
 
+	// Single-port deploy: serve the built SPA for everything not matched above
+	// (API patterns are more specific and win; unknown routes fall back to index.html).
+	if s.webDir != "" {
+		mux.HandleFunc("/", s.handleSPA)
+	}
+
 	return mux
+}
+
+// handleSPA serves static files from webDir, falling back to index.html so the
+// HTML5-history SPA works on deep links / refresh.
+func (s *Server) handleSPA(w http.ResponseWriter, r *http.Request) {
+	full := filepath.Join(s.webDir, filepath.Clean(r.URL.Path))
+	if fi, err := os.Stat(full); err == nil && !fi.IsDir() {
+		http.ServeFile(w, r, full)
+		return
+	}
+	http.ServeFile(w, r, filepath.Join(s.webDir, "index.html"))
 }
 
 // ---------- auth handlers ----------

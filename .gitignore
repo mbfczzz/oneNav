@@ -10,6 +10,8 @@ backend-go/data.json
 *.exe
 *.stackdump
 /gotest/
+backend-go/zmark-server
+zmark.log
 .DS_Store
 .vscode/*
 !.vscode/extensions.json

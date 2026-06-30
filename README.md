@@ -168,6 +168,19 @@ npm run gen:seed     # 重新生成后端种子数据
 - 与开源 PHP 项目 `helloxz/onenav` 无代码关系(原站也仅是导入格式兼容 + SEO 关键词层面的关系)。
 
 ## 生产部署
+
+### 一键部署(推荐 · 与 MySQL 同机)
+在与 MySQL 同一台服务器上 clone 本仓库后:
+```bash
+DB_PASSWORD=你的MySQL密码 bash deploy.sh        # 非交互
+# 或:bash deploy.sh                              # 交互式输入密码
+# 用 80 端口(需 root):PORT=80 DB_PASSWORD=xxx bash deploy.sh
+```
+脚本依次:构建前端 → 构建 Go 后端 → 写入 `backend-go/.env`(默认 `DB_HOST=127.0.0.1`)→ 以 **systemd**(root 时)或 **nohup** 常驻启动,并做健康检查。后端**单进程同时提供前端与 `/api`**(同源,无需 Nginx);默认端口 `8080`,完成后访问 `http://服务器IP:8080/`。可用环境变量覆盖:`DB_HOST DB_PORT DB_NAME DB_USERNAME DB_PASSWORD PORT ADMIN_USER ADMIN_PASS TABLE_PREFIX AUTH_TTL_HOURS`。
+
+> 原理:设置 `WEB_DIR=<dist 路径>` 后,Go 后端托管前端静态文件,并对未匹配路由回退 `index.html`(支持 history 深链)。`deploy.sh` 会自动设置它。systemd 服务名 `zmark`(`journalctl -u zmark -f` 看日志)。
+
+### 手动 / Nginx 方式
 前端是 **HTML5 history 模式 SPA**,生产托管需满足两点:
 1. **SPA 回退**:所有未匹配路径回退到 `index.html`,否则刷新 `/dashboard` 会 404。
 2. **反代 `/api`** 到 Go 后端(Vite 的 `/api` 代理只在开发时生效);并建议在最外层做 **TLS 终止**(后端是明文 HTTP,token/密码不应裸跑公网)。
