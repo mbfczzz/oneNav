@@ -170,15 +170,28 @@ npm run gen:seed     # 重新生成后端种子数据
 ## 生产部署
 
 ### 一键部署(推荐 · 与 MySQL 同机)
-在与 MySQL 同一台服务器上 clone 本仓库后:
-```bash
-DB_PASSWORD=你的MySQL密码 bash deploy.sh        # 非交互
-# 或:bash deploy.sh                              # 交互式输入密码
-# 用 80 端口(需 root):PORT=80 DB_PASSWORD=xxx bash deploy.sh
-```
-脚本依次:构建前端 → 构建 Go 后端 → 写入 `backend-go/.env`(默认 `DB_HOST=127.0.0.1`)→ 以 **systemd**(root 时)或 **nohup** 常驻启动,并做健康检查。后端**单进程同时提供前端与 `/api`**(同源,无需 Nginx);默认端口 `8080`,完成后访问 `http://服务器IP:8080/`。可用环境变量覆盖:`DB_HOST DB_PORT DB_NAME DB_USERNAME DB_PASSWORD PORT ADMIN_USER ADMIN_PASS TABLE_PREFIX AUTH_TTL_HOURS`。
 
-> 原理:设置 `WEB_DIR=<dist 路径>` 后,Go 后端托管前端静态文件,并对未匹配路由回退 `index.html`(支持 history 深链)。`deploy.sh` 会自动设置它。systemd 服务名 `zmark`(`journalctl -u zmark -f` 看日志)。
+**方式一 · 一行命令**(自动装依赖 + 拉代码 + 部署),在与 MySQL 同一台服务器执行:
+
+私有仓库(需一个对该仓库有读权限的 GitHub token):
+```bash
+export GH_TOKEN=你的token DB_PASSWORD=你的MySQL密码 ADMIN_PASS=强密码
+bash -c "$(curl -fsSL -H "Authorization: token $GH_TOKEN" -H 'Accept: application/vnd.github.raw' https://api.github.com/repos/mbfczzz/oneNav/contents/install.sh)"
+```
+若把仓库设为公开,则更简单:
+```bash
+DB_PASSWORD=你的MySQL密码 bash -c "$(curl -fsSL https://raw.githubusercontent.com/mbfczzz/oneNav/main/install.sh)"
+```
+
+**方式二**:已把代码放到服务器后,在仓库根目录直接:
+```bash
+DB_PASSWORD=你的MySQL密码 bash deploy.sh
+# 80 端口(需 root):PORT=80 ADMIN_PASS=强密码 DB_PASSWORD=xxx bash deploy.sh
+```
+
+`deploy.sh` 全自动:**缺 Go / Node / git 自动安装** → 构建前端+后端 → 写 `backend-go/.env`(默认 `DB_HOST=127.0.0.1`)→ **systemd**(root)或 **nohup** 常驻 → 放行系统防火墙端口 → 健康检查。后端**单进程同时服务前端与 `/api`**(同源,无需 Nginx),默认端口 `8080`。可覆盖:`DB_HOST DB_PORT DB_NAME DB_USERNAME DB_PASSWORD PORT ADMIN_USER ADMIN_PASS TABLE_PREFIX AUTH_TTL_HOURS SKIP_DEPS`。
+
+> ⚠️ 云服务器还需在【安全组】入方向放行对应端口(脚本只能开系统防火墙)。`WEB_DIR` 由脚本自动设置(Go 托管 SPA + history 回退);systemd 服务名 `zmark`(`journalctl -u zmark -f`)。
 
 ### 手动 / Nginx 方式
 前端是 **HTML5 history 模式 SPA**,生产托管需满足两点:
