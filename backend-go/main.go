@@ -108,6 +108,7 @@ type Server struct {
 	tLinks    string
 	tUsers    string
 	tInvites  string
+	tSettings string
 	adminUser string
 	adminPass string
 	authTTL   time.Duration
@@ -173,6 +174,7 @@ func main() {
 		tLinks:    prefix + "links",
 		tUsers:    prefix + "users",
 		tInvites:  prefix + "invites",
+		tSettings: prefix + "settings",
 		adminUser: env("ADMIN_USER", "admin"),
 		adminPass: env("ADMIN_PASS", "admin123"),
 		authTTL:   time.Duration(ttlHours) * time.Hour,
@@ -314,6 +316,11 @@ func (s *Server) migrate() error {
 			created_by VARCHAR(64) NOT NULL DEFAULT '',
 			create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`, s.tInvites),
+
+		fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s (
+			skey VARCHAR(64) PRIMARY KEY,
+			svalue TEXT
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`, s.tSettings),
 	}
 	for _, q := range stmts {
 		if _, err := s.db.Exec(q); err != nil {
@@ -583,6 +590,8 @@ func (s *Server) routes() *http.ServeMux {
 		writeJSON(w, 200, map[string]any{"ok": true, "time": time.Now()})
 	})
 	mux.HandleFunc("GET /api/all", s.handleAll)
+	mux.HandleFunc("GET /api/settings", s.handleGetSettings)
+	mux.HandleFunc("PUT /api/settings", s.adminOnly(s.handleUpdateSettings))
 
 	mux.HandleFunc("POST /api/register", s.handleRegister)
 	mux.HandleFunc("POST /api/login", s.handleLogin)
@@ -751,6 +760,54 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleMe(w http.ResponseWriter, r *http.Request) {
 	sess, _ := s.currentUser(r)
 	writeJSON(w, 200, map[string]any{"user": map[string]string{"username": sess.username, "role": sess.role}})
+}
+
+// ---------- site settings ----------
+
+const defaultSiteName = "自由墨客"
+
+func (s *Server) getSetting(key, def string) string {
+	var v sql.NullString
+	if err := s.db.QueryRow("SELECT svalue FROM "+s.tSettings+" WHERE skey=?", key).Scan(&v); err != nil || !v.Valid || v.String == "" {
+		return def
+	}
+	return v.String
+}
+
+func (s *Server) setSetting(key, value string) error {
+	_, err := s.db.Exec(
+		"INSERT INTO "+s.tSettings+" (skey, svalue) VALUES (?,?) ON DUPLICATE KEY UPDATE svalue=VALUES(svalue)",
+		key, value,
+	)
+	return err
+}
+
+func (s *Server) handleGetSettings(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, 200, map[string]any{"siteName": s.getSetting("site_name", defaultSiteName)})
+}
+
+func (s *Server) handleUpdateSettings(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		SiteName string `json:"siteName"`
+	}
+	if err := readJSON(r, &body); err != nil {
+		httpError(w, 400, "bad request")
+		return
+	}
+	name := strings.TrimSpace(body.SiteName)
+	if name == "" {
+		httpError(w, 400, "站点名称不能为空")
+		return
+	}
+	if len([]rune(name)) > 40 {
+		httpError(w, 400, "站点名称过长(最多 40 字)")
+		return
+	}
+	if err := s.setSetting("site_name", name); err != nil {
+		s.fail(w, err)
+		return
+	}
+	writeJSON(w, 200, map[string]any{"siteName": name})
 }
 
 func (s *Server) handleListUsers(w http.ResponseWriter, r *http.Request) {

@@ -4,8 +4,12 @@ import { RouterView } from 'vue-router'
 import { useNavStore } from '@/stores/nav'
 import ToastHost from '@/components/ToastHost.vue'
 
-// Validate/refresh any persisted session on startup.
-onMounted(() => useNavStore().initAuth())
+// Load site settings (title/brand) + validate any persisted session on startup.
+onMounted(() => {
+  const store = useNavStore()
+  store.fetchSettings()
+  store.initAuth()
+})
 </script>
 
 <template>

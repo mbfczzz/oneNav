@@ -40,6 +40,9 @@ async function req(method, path, body) {
 
 export const fetchAll = (scope) => req('GET', scope ? `/all?scope=${scope}` : '/all')
 
+export const getSettings = () => req('GET', '/settings')
+export const updateSettings = (data) => req('PUT', '/settings', data)
+
 export const register = (username, password, code) =>
   req('POST', '/register', { username, password, code })
 export const login = (username, password) => req('POST', '/login', { username, password })

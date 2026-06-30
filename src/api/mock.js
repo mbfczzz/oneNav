@@ -39,6 +39,7 @@ function load() {
   }
   if (!db.users) db.users = [{ id: 'admin', username: 'admin', password: 'admin123', role: 'admin' }]
   if (!db.invites) db.invites = []
+  if (!db.settings) db.settings = {}
   return db
 }
 
@@ -159,6 +160,24 @@ export async function me() {
   const s = currentSession()
   if (!s) throw new Error('unauthorized')
   return { user: { username: s.username, role: s.role } }
+}
+
+export async function getSettings() {
+  await delay(30)
+  const db = load()
+  return { siteName: (db.settings && db.settings.siteName) || '自由墨客' }
+}
+export async function updateSettings(data) {
+  await delay(50)
+  const sess = currentSession()
+  if (!sess || sess.role !== 'admin') throw new Error('仅管理员可访问')
+  const name = String(data.siteName || '').trim()
+  if (!name) throw new Error('站点名称不能为空')
+  const db = load()
+  db.settings = db.settings || {}
+  db.settings.siteName = name
+  save(db)
+  return { siteName: name }
 }
 
 export async function listUsers() {

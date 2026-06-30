@@ -13,6 +13,7 @@ import LinkFormModal from '@/components/dashboard/LinkFormModal.vue'
 import ImportModal from '@/components/dashboard/ImportModal.vue'
 import UsersModal from '@/components/dashboard/UsersModal.vue'
 import InvitesModal from '@/components/dashboard/InvitesModal.vue'
+import SettingsModal from '@/components/dashboard/SettingsModal.vue'
 
 const store = useNavStore()
 const router = useRouter()
@@ -29,6 +30,7 @@ const editingLink = ref(null)
 const showImport = ref(false)
 const showUsers = ref(false)
 const showInvites = ref(false)
+const showSettings = ref(false)
 const confirm = reactive({ open: false, title: '', message: '', onConfirm: null })
 
 // reorderable mirrors
@@ -206,6 +208,14 @@ async function logout() {
           <button
             v-if="store.isAdmin"
             class="btn-ghost border border-gray-200"
+            @click="showSettings = true"
+          >
+            <Icon icon="ri:settings-3-line" width="16" height="16" />
+            <span class="hidden sm:inline">站点设置</span>
+          </button>
+          <button
+            v-if="store.isAdmin"
+            class="btn-ghost border border-gray-200"
             @click="showInvites = true"
           >
             <Icon icon="ri:ticket-2-line" width="16" height="16" />
@@ -365,6 +375,7 @@ async function logout() {
     <ImportModal v-model="showImport" />
     <UsersModal v-model="showUsers" />
     <InvitesModal v-model="showInvites" />
+    <SettingsModal v-model="showSettings" />
 
     <Modal
       v-model="confirm.open"

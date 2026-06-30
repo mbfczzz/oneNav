@@ -51,7 +51,7 @@ async function logout() {
         <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white">
           <Icon icon="ri:bookmark-fill" width="18" height="18" />
         </span>
-        <span class="hidden text-base font-semibold text-gray-800 sm:block">{{ t('app.name') }}</span>
+        <span class="hidden text-base font-semibold text-gray-800 sm:block">{{ store.settings.siteName || t('app.name') }}</span>
       </router-link>
 
       <div class="relative ml-2 max-w-md flex-1">

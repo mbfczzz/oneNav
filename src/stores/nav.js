@@ -24,6 +24,8 @@ export const useNavStore = defineStore('nav', {
     // auth
     token: getToken(),
     user: null,
+    // site settings (admin-configurable)
+    settings: { siteName: '' },
   }),
   getters: {
     sortedCategories: (state) => [...state.categories].sort((a, b) => a.weight - b.weight),
@@ -87,6 +89,27 @@ export const useNavStore = defineStore('nav', {
     async refresh() {
       await this.loadAll()
     },
+
+    // ---------- site settings ----------
+    async fetchSettings() {
+      try {
+        this.settings = await api.getSettings()
+      } catch {
+        /* keep defaults on failure */
+      }
+      this.applySiteName()
+    },
+    async updateSettings(data) {
+      this.settings = await api.updateSettings(data)
+      this.applySiteName()
+      return this.settings
+    },
+    applySiteName() {
+      if (typeof document !== 'undefined' && this.settings?.siteName) {
+        document.title = this.settings.siteName
+      }
+    },
+
     async setScope(scope) {
       if (scope === 'mine' && !this.isAuthenticated) scope = 'global'
       if (scope === this.scope && this.loadedScope === scope) return
