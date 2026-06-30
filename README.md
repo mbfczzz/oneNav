@@ -47,9 +47,9 @@ npm run dev          # http://localhost:5173,API 走真实后端
 
 | 变量 | 默认 | 说明 |
 | --- | --- | --- |
-| `DB_HOST` | `127.0.0.1` | MySQL 主机(你的 `.env` 已设为 `106.14.165.141`) |
+| `DB_HOST` | `127.0.0.1` | MySQL 主机(与数据库同机部署填 `127.0.0.1`) |
 | `DB_PORT` | `3306` | 端口 |
-| `DB_NAME` | `zmark` | 库名(不存在会自动 `CREATE DATABASE`;你的 `.env` 设为 `beadforge`) |
+| `DB_NAME` | `zmark` | 库名(不存在会自动 `CREATE DATABASE`) |
 | `DB_USERNAME` | `root` | 用户名 |
 | `DB_PASSWORD` | (必填,无默认) | 密码,放 `backend-go/.env` 或用环境变量 |
 | `TABLE_PREFIX` | `onenav_` | 表前缀,避免与库中已有表冲突 |
@@ -164,7 +164,7 @@ npm run gen:seed     # 重新生成后端种子数据
 
 ## 与原站 / 你的技术栈的关系
 - 原站 `nav.rss.ink` 真实后端不公开;本仓库后端按你提供的 MySQL 自建,数据契约与界面对齐。
-- 你给的是 Spring datasource 配置,但按你的选择后端用 **Go** 实现;表名加 `onenav_` 前缀放在 `beadforge` 库中,纯增量,不影响该库已有业务表。
+- 后端用 **Go** 实现;表名加 `onenav_` 前缀放在你指定的库中,纯增量,不影响该库已有业务表。
 - 与开源 PHP 项目 `helloxz/onenav` 无代码关系(原站也仅是导入格式兼容 + SEO 关键词层面的关系)。
 
 ## 生产部署

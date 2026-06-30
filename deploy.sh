@@ -108,7 +108,7 @@ command -v npm  >/dev/null 2>&1 || { echo "✗ 未找到 npm"; exit 1; }
 echo "==> 配置(直接回车使用括号内默认值)"
 ask DB_HOST     "MySQL 主机"   "127.0.0.1"
 ask DB_PORT     "MySQL 端口"   "3306"
-ask DB_NAME     "数据库名"     "beadforge"
+ask DB_NAME     "数据库名"     "zmark"
 ask DB_USERNAME "MySQL 用户"   "root"
 ask DB_PASSWORD "MySQL 密码"   "$(read_env DB_PASSWORD)" secret
 [ -z "$DB_PASSWORD" ] && { echo "✗ MySQL 密码不能为空(非交互模式请用 DB_PASSWORD=xxx 传入)"; exit 1; }
