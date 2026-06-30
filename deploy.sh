@@ -26,6 +26,7 @@ TABLE_PREFIX="${TABLE_PREFIX:-onenav_}"
 AUTH_TTL_HOURS="${AUTH_TTL_HOURS:-168}"
 
 read_env() { [ -f "$ENV_FILE" ] && sed -n "s/^$1=//p" "$ENV_FILE" | head -1 || true; }
+def() { local v; v="$(read_env "$1")"; [ -n "$v" ] && printf '%s' "$v" || printf '%s' "$2"; }  # 已有 .env 则复用其值
 # ask VAR 提示 默认 [secret] —— 已用 env 传入则保留;非交互终端则用默认
 ask() {
   local var="$1" prompt="$2" def="$3" secret="${4:-}" input
@@ -105,17 +106,17 @@ command -v node >/dev/null 2>&1 || { echo "✗ 未找到 node,请手动安装 No
 command -v npm  >/dev/null 2>&1 || { echo "✗ 未找到 npm"; exit 1; }
 
 # ---------- 交互式收集配置(直接回车用默认值)----------
-echo "==> 配置(直接回车使用括号内默认值)"
-ask DB_HOST     "MySQL 主机"   "127.0.0.1"
-ask DB_PORT     "MySQL 端口"   "3306"
-ask DB_NAME     "数据库名"     "zmark"
-ask DB_USERNAME "MySQL 用户"   "root"
+echo "==> 配置(直接回车使用括号内默认值;已部署过则默认沿用上次的配置)"
+ask DB_HOST     "MySQL 主机"   "$(def DB_HOST 127.0.0.1)"
+ask DB_PORT     "MySQL 端口"   "$(def DB_PORT 3306)"
+ask DB_NAME     "数据库名"     "$(def DB_NAME zmark)"
+ask DB_USERNAME "MySQL 用户"   "$(def DB_USERNAME root)"
 ask DB_PASSWORD "MySQL 密码"   "$(read_env DB_PASSWORD)" secret
 [ -z "$DB_PASSWORD" ] && { echo "✗ MySQL 密码不能为空(非交互模式请用 DB_PASSWORD=xxx 传入)"; exit 1; }
-ask ADMIN_USER  "管理员用户名" "admin"
+ask ADMIN_USER  "管理员用户名" "$(def ADMIN_USER admin)"
 ask ADMIN_PASS  "管理员密码"   "$(read_env ADMIN_PASS)" secret
 ADMIN_PASS="${ADMIN_PASS:-admin123}"
-ask PORT        "服务端口"     "8080"
+ask PORT        "服务端口"     "$(def PORT 8080)"
 
 echo "==> [1/5] 构建前端 (VITE_API_BASE=/api)"
 if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi

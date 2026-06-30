@@ -193,6 +193,14 @@ DB_PASSWORD=你的MySQL密码 bash deploy.sh
 
 > ⚠️ 云服务器还需在【安全组】入方向放行对应端口(脚本只能开系统防火墙)。`WEB_DIR` 由脚本自动设置(Go 托管 SPA + history 回退);systemd 服务名 `zmark`(`journalctl -u zmark -f`)。
 
+### 更新部署(代码有更新时)
+在仓库目录执行 `update.sh` —— 拉最新代码 → 重建前端+后端 → 重启服务,**复用现有 `backend-go/.env`,无需重新输入数据库配置**:
+```bash
+cd oneNav && bash update.sh
+# 若本地还没有 update.sh:cd oneNav && git pull && bash update.sh
+```
+或者重跑一键安装命令也可以 —— `deploy.sh` 会**沿用上次的配置**(各项提示直接回车即可)。
+
 ### 手动 / Nginx 方式
 前端是 **HTML5 history 模式 SPA**,生产托管需满足两点:
 1. **SPA 回退**:所有未匹配路径回退到 `index.html`,否则刷新 `/dashboard` 会 404。
