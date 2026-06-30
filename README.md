@@ -194,12 +194,15 @@ DB_PASSWORD=你的MySQL密码 bash deploy.sh
 > ⚠️ 云服务器还需在【安全组】入方向放行对应端口(脚本只能开系统防火墙)。`WEB_DIR` 由脚本自动设置(Go 托管 SPA + history 回退);systemd 服务名 `zmark`(`journalctl -u zmark -f`)。
 
 ### 更新部署(代码有更新时)
-在仓库目录执行 `update.sh` —— 拉最新代码 → 重建前端+后端 → 重启服务,**复用现有 `backend-go/.env`,无需重新输入数据库配置**:
+**直接重跑一键命令即可** —— 脚本检测到已部署会让你选 **「1) 更新 / 2) 重新安装」**;选更新会拉最新代码、重建、重启并**沿用现有配置**(无需重填数据库):
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/mbfczzz/oneNav/main/install.sh)"
+```
+或在仓库目录用非交互更新脚本(自动拉取+重建+重启):
 ```bash
 cd oneNav && bash update.sh
-# 若本地还没有 update.sh:cd oneNav && git pull && bash update.sh
 ```
-或者重跑一键安装命令也可以 —— `deploy.sh` 会**沿用上次的配置**(各项提示直接回车即可)。
+> 也可显式指定模式:`MODE=update bash deploy.sh` 或 `MODE=install bash deploy.sh`。
 
 ### 手动 / Nginx 方式
 前端是 **HTML5 history 模式 SPA**,生产托管需满足两点:

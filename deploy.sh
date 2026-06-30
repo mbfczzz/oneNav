@@ -105,18 +105,42 @@ command -v go   >/dev/null 2>&1 || { echo "✗ 未找到 go,请手动安装 Go 1
 command -v node >/dev/null 2>&1 || { echo "✗ 未找到 node,请手动安装 Node 18+"; exit 1; }
 command -v npm  >/dev/null 2>&1 || { echo "✗ 未找到 npm"; exit 1; }
 
-# ---------- 交互式收集配置(直接回车用默认值)----------
-echo "==> 配置(直接回车使用括号内默认值;已部署过则默认沿用上次的配置)"
-ask DB_HOST     "MySQL 主机"   "$(def DB_HOST 127.0.0.1)"
-ask DB_PORT     "MySQL 端口"   "$(def DB_PORT 3306)"
-ask DB_NAME     "数据库名"     "$(def DB_NAME zmark)"
-ask DB_USERNAME "MySQL 用户"   "$(def DB_USERNAME root)"
-ask DB_PASSWORD "MySQL 密码"   "$(read_env DB_PASSWORD)" secret
-[ -z "$DB_PASSWORD" ] && { echo "✗ MySQL 密码不能为空(非交互模式请用 DB_PASSWORD=xxx 传入)"; exit 1; }
-ask ADMIN_USER  "管理员用户名" "$(def ADMIN_USER admin)"
-ask ADMIN_PASS  "管理员密码"   "$(read_env ADMIN_PASS)" secret
-ADMIN_PASS="${ADMIN_PASS:-admin123}"
-ask PORT        "服务端口"     "$(def PORT 8080)"
+# ---------- 模式:安装 or 更新 ----------
+MODE="${MODE:-}"
+if [ -z "$MODE" ]; then
+  if [ -f "$ENV_FILE" ]; then
+    if [ -t 0 ]; then
+      echo "检测到已有部署,请选择:"
+      echo "  1) 更新     —— 重建并重启,沿用现有配置(无需重填数据库)"
+      echo "  2) 重新安装 —— 重新填写数据库 / 管理员配置"
+      read -rp "输入 1 或 2 [默认 1]: " _m
+      [ "${_m:-1}" = "2" ] && MODE="install" || MODE="update"
+    else
+      MODE="update"   # 非交互且已部署 -> 默认更新
+    fi
+  else
+    MODE="install"
+  fi
+fi
+echo "==> 模式:$([ "$MODE" = "update" ] && echo 更新 || echo 安装/配置)"
+
+if [ "$MODE" = "install" ]; then
+  echo "==> 配置(直接回车使用括号内默认值;已部署过则默认沿用上次的配置)"
+  ask DB_HOST     "MySQL 主机"   "$(def DB_HOST 127.0.0.1)"
+  ask DB_PORT     "MySQL 端口"   "$(def DB_PORT 3306)"
+  ask DB_NAME     "数据库名"     "$(def DB_NAME zmark)"
+  ask DB_USERNAME "MySQL 用户"   "$(def DB_USERNAME root)"
+  ask DB_PASSWORD "MySQL 密码"   "$(read_env DB_PASSWORD)" secret
+  [ -z "$DB_PASSWORD" ] && { echo "✗ MySQL 密码不能为空(非交互模式请用 DB_PASSWORD=xxx 传入)"; exit 1; }
+  ask ADMIN_USER  "管理员用户名" "$(def ADMIN_USER admin)"
+  ask ADMIN_PASS  "管理员密码"   "$(read_env ADMIN_PASS)" secret
+  ADMIN_PASS="${ADMIN_PASS:-admin123}"
+  ask PORT        "服务端口"     "$(def PORT 8080)"
+else
+  [ -f "$ENV_FILE" ] || { echo "✗ 未找到 $ENV_FILE,无法更新,请改用安装"; exit 1; }
+  grep -q '^WEB_DIR=' "$ENV_FILE" || echo "WEB_DIR=$ROOT/dist" >> "$ENV_FILE"  # 兼容旧 .env
+  PORT="$(read_env PORT)"; PORT="${PORT:-8080}"
+fi
 
 echo "==> [1/5] 构建前端 (VITE_API_BASE=/api)"
 if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
@@ -126,7 +150,8 @@ echo "==> [2/5] 构建后端 (Go)"
 ( cd backend-go && go build -o "${APP_NAME}-server" . )
 BIN="$ROOT/backend-go/${APP_NAME}-server"
 
-echo "==> [3/5] 写入 $ENV_FILE"
+if [ "$MODE" = "install" ]; then
+echo "==> 写入 $ENV_FILE"
 umask 077
 cat > "$ENV_FILE" <<EOF
 DB_HOST=$DB_HOST
@@ -141,6 +166,7 @@ ADMIN_PASS=$ADMIN_PASS
 AUTH_TTL_HOURS=$AUTH_TTL_HOURS
 WEB_DIR=$ROOT/dist
 EOF
+fi
 
 echo "==> [4/5] 启动服务"
 if [ "$(id -u)" = "0" ] && command -v systemctl >/dev/null 2>&1; then
