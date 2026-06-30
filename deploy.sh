@@ -21,20 +21,23 @@ APP_NAME="zmark"
 ENV_FILE="backend-go/.env"
 GO_VERSION="${GO_VERSION:-1.22.5}"
 
-# ---------- 配置(同机部署默认连本地 MySQL)----------
-DB_HOST="${DB_HOST:-127.0.0.1}"
-DB_PORT="${DB_PORT:-3306}"
-DB_NAME="${DB_NAME:-beadforge}"
-DB_USERNAME="${DB_USERNAME:-root}"
-PORT="${PORT:-8080}"
-ADMIN_USER="${ADMIN_USER:-admin}"
+# ---------- 配置(env 变量优先;否则交互询问;回车用默认)----------
 TABLE_PREFIX="${TABLE_PREFIX:-onenav_}"
 AUTH_TTL_HOURS="${AUTH_TTL_HOURS:-168}"
 
 read_env() { [ -f "$ENV_FILE" ] && sed -n "s/^$1=//p" "$ENV_FILE" | head -1 || true; }
-DB_PASSWORD="${DB_PASSWORD:-$(read_env DB_PASSWORD)}"
-ADMIN_PASS="${ADMIN_PASS:-$(read_env ADMIN_PASS)}"
-ADMIN_PASS="${ADMIN_PASS:-admin123}"
+# ask VAR 提示 默认 [secret] —— 已用 env 传入则保留;非交互终端则用默认
+ask() {
+  local var="$1" prompt="$2" def="$3" secret="${4:-}" input
+  [ -n "${!var:-}" ] && return
+  if [ ! -t 0 ]; then printf -v "$var" '%s' "$def"; return; fi
+  if [ -n "$secret" ]; then
+    read -rsp "$prompt(回车默认): " input; echo
+  else
+    read -rp "$prompt${def:+ [默认 $def]}: " input
+  fi
+  printf -v "$var" '%s' "${input:-$def}"
+}
 
 # ---------- sudo / 包管理器 ----------
 SUDO=""; [ "$(id -u)" = "0" ] || SUDO="sudo"
@@ -101,11 +104,18 @@ command -v go   >/dev/null 2>&1 || { echo "✗ 未找到 go,请手动安装 Go 1
 command -v node >/dev/null 2>&1 || { echo "✗ 未找到 node,请手动安装 Node 18+"; exit 1; }
 command -v npm  >/dev/null 2>&1 || { echo "✗ 未找到 npm"; exit 1; }
 
-# ---------- 数据库密码 ----------
-if [ -z "$DB_PASSWORD" ]; then
-  read -rsp "请输入 MySQL 密码 (DB_PASSWORD): " DB_PASSWORD; echo
-fi
-[ -z "$DB_PASSWORD" ] && { echo "✗ DB_PASSWORD 不能为空"; exit 1; }
+# ---------- 交互式收集配置(直接回车用默认值)----------
+echo "==> 配置(直接回车使用括号内默认值)"
+ask DB_HOST     "MySQL 主机"   "127.0.0.1"
+ask DB_PORT     "MySQL 端口"   "3306"
+ask DB_NAME     "数据库名"     "beadforge"
+ask DB_USERNAME "MySQL 用户"   "root"
+ask DB_PASSWORD "MySQL 密码"   "$(read_env DB_PASSWORD)" secret
+[ -z "$DB_PASSWORD" ] && { echo "✗ MySQL 密码不能为空(非交互模式请用 DB_PASSWORD=xxx 传入)"; exit 1; }
+ask ADMIN_USER  "管理员用户名" "admin"
+ask ADMIN_PASS  "管理员密码"   "$(read_env ADMIN_PASS)" secret
+ADMIN_PASS="${ADMIN_PASS:-admin123}"
+ask PORT        "服务端口"     "8080"
 
 echo "==> [1/5] 构建前端 (VITE_API_BASE=/api)"
 if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
