@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --zmark-primary: #3b82f6;
+}
+
+/* Shared form / button primitives used across the dashboard + modals. */
+@layer components {
+  .input {
+    @apply w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm outline-none transition focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/15;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-600 disabled:opacity-60;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg bg-rose-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-rose-600 disabled:opacity-60;
+  }
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Microsoft YaHei', Roboto, Helvetica, Arial, sans-serif;
+  background: #f6f8fb;
+  color: #1f2937;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Card soft shadow — mirrors original `box-shadow:0 10px 24px #2d95bd24`. */
+.card-shadow {
+  box-shadow: 0 10px 24px rgba(45, 149, 189, 0.14);
+}
+
+/* Drag states — mirror the original .category-drag-* tokens. */
+.category-drag-ghost {
+  opacity: 0.45;
+  background: #f4fbfe;
+}
+.category-drag-chosen {
+  background: #f8fcff;
+}
+.category-drag-active {
+  box-shadow: 0 10px 24px rgba(45, 149, 189, 0.14);
+}
+
+/* Modal: backdrop fades, panel pops (scale + slight rise). */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.2s ease;
+}
+.modal-enter-active .zmodal-panel,
+.modal-leave-active .zmodal-panel {
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+.modal-enter-from .zmodal-panel,
+.modal-leave-to .zmodal-panel {
+  transform: translateY(10px) scale(0.97);
+  opacity: 0;
+}
+
+/* Search panel fade (original .search-panel-fade). */
+.search-panel-fade-enter-active,
+.search-panel-fade-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.search-panel-fade-enter-from,
+.search-panel-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* Mobile sidebar slide + backdrop fade (original mobile-sidebar-* transitions). */
+.mobile-sidebar-slide-enter-active,
+.mobile-sidebar-slide-leave-active {
+  transition: transform 0.28s ease;
+}
+.mobile-sidebar-slide-enter-from,
+.mobile-sidebar-slide-leave-to {
+  transform: translateX(-100%);
+}
+.mobile-sidebar-fade-enter-active,
+.mobile-sidebar-fade-leave-active {
+  transition: opacity 0.28s ease;
+}
+.mobile-sidebar-fade-enter-from,
+.mobile-sidebar-fade-leave-to {
+  opacity: 0;
+}
+
+/* Generic list fade for cards. */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}

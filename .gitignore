@@ -1,0 +1,19 @@
+node_modules
+dist
+dist-ssr
+*.local
+.env
+.env.local
+backend-go/data.json
+
+# Go build artifacts / scratch
+*.exe
+*.stackdump
+/gotest/
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

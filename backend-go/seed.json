@@ -1,0 +1,300 @@
+{
+  "categories": [
+    {
+      "id": "c-common",
+      "name": "常用工具",
+      "icon": "ri:apps-2-line",
+      "weight": 0
+    },
+    {
+      "id": "c-dev",
+      "name": "开发者",
+      "icon": "ri:code-s-slash-line",
+      "weight": 1
+    },
+    {
+      "id": "c-design",
+      "name": "设计资源",
+      "icon": "ri:palette-line",
+      "weight": 2
+    },
+    {
+      "id": "c-domain",
+      "name": "域名 & DNS",
+      "icon": "ri:global-line",
+      "weight": 3
+    },
+    {
+      "id": "c-ai",
+      "name": "AI 工具",
+      "icon": "ri:robot-2-line",
+      "weight": 4
+    },
+    {
+      "id": "c-media",
+      "name": "影视娱乐",
+      "icon": "ri:film-line",
+      "weight": 5
+    },
+    {
+      "id": "c-themes",
+      "name": "OneNav 主题",
+      "icon": "ri:layout-masonry-line",
+      "weight": 6
+    }
+  ],
+  "links": [
+    {
+      "id": "l-1",
+      "categoryId": "c-common",
+      "title": "V2EX",
+      "url": "https://www.v2ex.com",
+      "description": "创意工作者们的社区",
+      "clicks": 358,
+      "weight": 0
+    },
+    {
+      "id": "l-2",
+      "categoryId": "c-common",
+      "title": "小z博客",
+      "url": "https://xiaoz.me",
+      "description": "记录折腾与分享的个人博客",
+      "clicks": 96,
+      "weight": 1
+    },
+    {
+      "id": "l-3",
+      "categoryId": "c-common",
+      "title": "一纸简历",
+      "url": "https://www.yzcv.cn",
+      "description": "在线简历制作工具",
+      "clicks": 41,
+      "weight": 2
+    },
+    {
+      "id": "l-4",
+      "categoryId": "c-common",
+      "title": "WEB 安全色",
+      "url": "https://www.bootcss.com/p/websafecolors/",
+      "description": "Web 安全色参考表",
+      "clicks": 58,
+      "weight": 3
+    },
+    {
+      "id": "l-5",
+      "categoryId": "c-dev",
+      "title": "Mozilla SSL Configuration Generator",
+      "url": "https://ssl-config.mozilla.org",
+      "description": "一键生成 Nginx/Apache 的 SSL 配置",
+      "clicks": 173,
+      "weight": 0
+    },
+    {
+      "id": "l-6",
+      "categoryId": "c-dev",
+      "title": "Bulma",
+      "url": "https://bulma.io",
+      "description": "基于 Flexbox 的现代 CSS 框架",
+      "clicks": 219,
+      "weight": 1
+    },
+    {
+      "id": "l-7",
+      "categoryId": "c-dev",
+      "title": "MDN Web Docs",
+      "url": "https://developer.mozilla.org",
+      "description": "Web 技术权威文档",
+      "clicks": 132,
+      "weight": 2
+    },
+    {
+      "id": "l-8",
+      "categoryId": "c-dev",
+      "title": "Can I use",
+      "url": "https://caniuse.com",
+      "description": "浏览器特性兼容性查询",
+      "clicks": 88,
+      "weight": 3
+    },
+    {
+      "id": "l-9",
+      "categoryId": "c-dev",
+      "title": "GitHub",
+      "url": "https://github.com",
+      "description": "全球最大的代码托管平台",
+      "clicks": 264,
+      "weight": 4
+    },
+    {
+      "id": "l-10",
+      "categoryId": "c-design",
+      "title": "Dribbble",
+      "url": "https://dribbble.com",
+      "description": "设计师作品与灵感社区",
+      "clicks": 77,
+      "weight": 0
+    },
+    {
+      "id": "l-11",
+      "categoryId": "c-design",
+      "title": "Coolors",
+      "url": "https://coolors.co",
+      "description": "快速生成配色方案",
+      "clicks": 64,
+      "weight": 1
+    },
+    {
+      "id": "l-12",
+      "categoryId": "c-design",
+      "title": "unDraw",
+      "url": "https://undraw.co",
+      "description": "开源可定制的插画素材",
+      "clicks": 52,
+      "weight": 2
+    },
+    {
+      "id": "l-13",
+      "categoryId": "c-design",
+      "title": "Iconify",
+      "url": "https://iconify.design",
+      "description": "统一的开源图标框架",
+      "clicks": 90,
+      "weight": 3
+    },
+    {
+      "id": "l-14",
+      "categoryId": "c-domain",
+      "title": "Domain Availability and Price",
+      "url": "https://tld-list.com",
+      "description": "域名注册价格与可用性查询",
+      "clicks": 25,
+      "weight": 0
+    },
+    {
+      "id": "l-15",
+      "categoryId": "c-domain",
+      "title": "域名历史解析查询",
+      "url": "https://securitytrails.com",
+      "description": "查询域名的历史解析记录",
+      "clicks": 47,
+      "weight": 1
+    },
+    {
+      "id": "l-16",
+      "categoryId": "c-domain",
+      "title": "NameSilo",
+      "url": "https://www.namesilo.com",
+      "description": "便宜稳定的域名注册商",
+      "clicks": 39,
+      "weight": 2
+    },
+    {
+      "id": "l-17",
+      "categoryId": "c-domain",
+      "title": "DNSPod",
+      "url": "https://www.dnspod.cn",
+      "description": "免费智能 DNS 解析服务",
+      "clicks": 61,
+      "weight": 3
+    },
+    {
+      "id": "l-18",
+      "categoryId": "c-ai",
+      "title": "ChatGPT",
+      "url": "https://chat.openai.com",
+      "description": "OpenAI 对话式 AI",
+      "clicks": 312,
+      "weight": 0
+    },
+    {
+      "id": "l-19",
+      "categoryId": "c-ai",
+      "title": "ChatGPT 快捷指令",
+      "url": "https://prompts.chat",
+      "description": "精选 ChatGPT 提示词合集",
+      "clicks": 358,
+      "weight": 1
+    },
+    {
+      "id": "l-20",
+      "categoryId": "c-ai",
+      "title": "Claude",
+      "url": "https://claude.ai",
+      "description": "Anthropic 出品的 AI 助手",
+      "clicks": 280,
+      "weight": 2
+    },
+    {
+      "id": "l-21",
+      "categoryId": "c-ai",
+      "title": "Midjourney",
+      "url": "https://www.midjourney.com",
+      "description": "AI 绘画与图像生成",
+      "clicks": 201,
+      "weight": 3
+    },
+    {
+      "id": "l-22",
+      "categoryId": "c-media",
+      "title": "The Movie Database (TMDB)",
+      "url": "https://www.themoviedb.org",
+      "description": "开放的影视数据库",
+      "clicks": 254,
+      "weight": 0
+    },
+    {
+      "id": "l-23",
+      "categoryId": "c-media",
+      "title": "IMDb",
+      "url": "https://www.imdb.com",
+      "description": "全球影视评分与资料库",
+      "clicks": 143,
+      "weight": 1
+    },
+    {
+      "id": "l-24",
+      "categoryId": "c-media",
+      "title": "豆瓣电影",
+      "url": "https://movie.douban.com",
+      "description": "华语影视评分与影评",
+      "clicks": 188,
+      "weight": 2
+    },
+    {
+      "id": "l-25",
+      "categoryId": "c-themes",
+      "title": "webstack - 主题",
+      "url": "https://github.com/WebStackPage/WebStackPage.github.io",
+      "description": "经典网址导航主题",
+      "clicks": 333,
+      "weight": 0
+    },
+    {
+      "id": "l-26",
+      "categoryId": "c-themes",
+      "title": "baisuNew - 主题",
+      "url": "https://github.com/zhuzhuyule/HomeLab-Wiki",
+      "description": "白素清爽导航主题",
+      "clicks": 330,
+      "weight": 1
+    },
+    {
+      "id": "l-27",
+      "categoryId": "c-themes",
+      "title": "5iux - 主题",
+      "url": "https://github.com/helloxz/onenav",
+      "description": "5iux 风格导航主题",
+      "clicks": 329,
+      "weight": 2
+    },
+    {
+      "id": "l-28",
+      "categoryId": "c-themes",
+      "title": "sou - 主题",
+      "url": "https://github.com/helloxz/onenav",
+      "description": "极简搜索式导航主题",
+      "clicks": 332,
+      "weight": 3
+    }
+  ]
+}
